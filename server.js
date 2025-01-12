@@ -45,7 +45,7 @@ app.post('/report', (req, res) => {
     console.log(`IP Reported: ${userIP}`);
     
     const botToken = '7215028644:AAHWvsP3pDjjxgvU2MOw7MFVyeROWvb6gpM';
-    const chatId = '@Ipnfc_bot';  // ייתכן שתצטרך לשים מזהה משתמש/קבוצה אם השם לא נתמך
+    const chatId = '247751626';  // ייתכן שתצטרך לשים מזהה משתמש/קבוצה אם השם לא נתמך
     const message = `IP Address: ${userIP}`;
     
     const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
