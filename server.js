@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const fetch = require('node-fetch'); // יש לוודא שהמודול מותקן: npm install node-fetch
 
 const app = express();
 const PORT = 3000;
@@ -41,11 +42,16 @@ app.get('/image', (req, res) => {
     res.sendFile(imagePath);
 });
 
-// קליטת בקשה ודיווח IP
+// קליטת בקשה ודיווח IP עם שליחת הודעת WhatsApp
 app.post('/report', (req, res) => {
     const userIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     console.log(`IP Reported: ${userIP}`);
-    res.send({ message: 'IP logged successfully' });
+    
+    // שליחת הודעה ל-WhatsApp עם כתובת ה-IP
+    const whatsappUrl = `https://wa.me/972526405022?text=IP%20Address:%20${encodeURIComponent(userIP)}`;
+    console.log(`WhatsApp link: ${whatsappUrl}`);
+    
+    res.send({ message: 'IP logged successfully, check your WhatsApp link.', link: whatsappUrl });
 });
 
 // הפעלת השרת
