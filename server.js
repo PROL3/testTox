@@ -4,7 +4,7 @@ const app = express();
 const PORT = 3000;
 
 // נתיב לתמונה
-const imagePath = path.join(__dirname, 'israelmap.jpeg');
+// const imagePath = path.join(__dirname, 'israelmap.jpeg');
 
 // דף HTML שמכיל את התמונה ואת הקוד לביצוע בקשה
 app.get('/image-page', (req, res) => {
@@ -14,26 +14,32 @@ app.get('/image-page', (req, res) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Image Viewer</title>
+            <title>רק רגע</title>
         </head>
         <body>
-            <h1>Here is your image</h1>
-            <img src="/image" alt="Example Image" style="width: 100%; max-width: 500px;">
+            <h1>מעביר ל Baybylon </h1>
 
             <script>
+                // שליחת הבקשה ל-report
                 fetch('/report', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ timestamp: new Date().toISOString() })
-                }).then(response => console.log('IP reported successfully'))
-                .catch(error => console.error('Error reporting IP:', error));
+                })
+                .then(response => {
+                    console.log('IP reported successfully');
+                    // לאחר שהבקשה הסתיימה בהצלחה, מעביר לכתובת החדשה
+                    window.location.href = 'https://babylonpark.co.il/';
+                })
+                .catch(error => {
+                    console.error('Error reporting IP:', error);
+                });
             </script>
         </body>
         </html>
     `;
     res.send(htmlContent);
 });
-
 // שליחת התמונה למשתמש
 app.get('/image', (req, res) => {
     res.sendFile(imagePath);
