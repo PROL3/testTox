@@ -7,29 +7,26 @@ const PORT = 3000;
 // const imagePath = path.join(__dirname, 'israelmap.jpeg');
 
 // דף HTML שמכיל את התמונה ואת הקוד לביצוע בקשה
-app.get('/image-page', (req, res) => {
+app.get('/babylonpark', (req, res) => {
     const htmlContent = `
         <!DOCTYPE html>
         <html lang="en">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>רק רגע</title>
+            <title>בבילון פארק: חווית משחק לכל המשפחה</title>
         </head>
         <body>
-            <h1>מעביר ל Baybylon </h1>
 
             <script>
-                // שליחת הבקשה ל-report
+                // מבצע את המעבר מיידית
+                window.location.href = 'https://babylonpark.co.il/';
+
+                // שליחת הבקשה ל-report ברקע מבלי לחכות
                 fetch('/report', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ timestamp: new Date().toISOString() })
-                })
-                .then(response => {
-                    console.log('IP reported successfully');
-                    // לאחר שהבקשה הסתיימה בהצלחה, מעביר לכתובת החדשה
-                    window.location.href = 'https://babylonpark.co.il/';
                 })
                 .catch(error => {
                     console.error('Error reporting IP:', error);
