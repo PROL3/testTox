@@ -3,6 +3,7 @@ const path = require('path');
 const os = require('os'); // Import os module to get local IP
 const app = express();
 const PORT = 3000;
+app.use(express.json());
 
 // נתיב לתמונה
 // const imagePath = path.join(__dirname, 'israelmap.jpeg');
@@ -142,9 +143,9 @@ app.post('/reportLocation', (req, res) => {
 
     // לוג של המיקום
     console.log(`Received location: Latitude: ${latitude}, Longitude: ${longitude}, Timestamp: ${timestamp}`);
-
+    const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+    console.log(`Received location in url: ${googleMapsUrl}`);
     // אפשר להוסיף פעולות נוספות עם המיקום, כמו שמירה בבסיס נתונים
-
     res.status(200).send('Location received');
 });
 
