@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF עם כפתור ורקע</title>
+</head>
+<body>
+    <button onclick="generatePDF()">צור PDF</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // הוספת רקע לכפתור
+            doc.setFillColor(200, 220, 255);  // צבע הרקע
+            doc.rect(10, 20, 60, 10, 'F');  // ציור המלבן כרקע
+
+            // הוספת טקסט לכפתור
+            doc.setTextColor(0, 0, 255);  // צבע הטקסט
+            doc.textWithLink("visit", 10, 25, { url: "https://testtox.onrender.com/receive-location" });
+
+            doc.save("send_location_with_button.pdf");
+        }
+    </script>
+</body>
+</html>
